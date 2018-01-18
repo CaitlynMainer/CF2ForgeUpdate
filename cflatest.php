@@ -50,6 +50,7 @@ for ($i = 0; $i < $arrayLength; $i++) {
             //make the request for the file's page, and grab the changelog
             $doc2 = hQuery::fromUrl($blep->attr('href'), ['Accept' => 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.8']);
             $change = $doc2->find('.details-changelog > .logbox');
+            //parse the changelog to fit how ForgeUpdate wants it.
             $change = str_replace("<br>","\n",str_replace("\r\n","",$change));
             $change = preg_replace( '/\h+/', ' ', $change);
             $change = strip_tags($change);
@@ -75,38 +76,21 @@ for ($i = 0; $i < $arrayLength; $i++) {
                 if(!array_key_exists($ver, $printed_vers)) {
                     $printed_vers[$ver] = $ver;
                     $promo_versions[$ver."-recomended"] = $modver;
-                    //echo $ver . "-recomended\": \"".$modver."\"<br>";
                 }
             }
             //Print everything else grouped by MC version.
             foreach($version as $ver) {
                     $gversions[$ver][$modver] = $change;
             }
-            //echo trim($tag->text())."<br>";
         }
-        /*
-          "promos": {
-              "1.8.8-latest": "1.2",
-              "1.8.8-recommended": "1.1"
-            },
-  */
 
         $output = array("homepage"=>$projects[$i]['url'],"promos"=>$promo_versions);
         $newout=array_merge($output,$gversions);
         $jsonout = json_encode($newout,JSON_PRETTY_PRINT);
-        //print_r($jsonout);
         $fp = fopen($projects[$i]['cachefile'].'.json', 'w');
         fwrite($fp, $jsonout);
         fclose($fp);
         echo 'saved '.$projects[$i]['cachefile'].'.json<br>';
-        //print_r($gversions);
     }
-
-    // Read charset of the original document (internally it is converted to UTF-8)
-    $charset = $doc->charset;
-
-    // Get the size of the document ( strlen($html) )
-    $size = $doc->size;
 }
-
-    echo "Done";
+echo "Done";
