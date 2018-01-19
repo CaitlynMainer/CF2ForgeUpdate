@@ -75,7 +75,8 @@ for ($i = 0; $i < $arrayLength; $i++) {
             foreach($version as $ver) {
                 if(!array_key_exists($ver, $printed_vers)) {
                     $printed_vers[$ver] = $ver;
-                    $promo_versions[$ver."-recomended"] = $modver;
+                    $promo_versions[$ver."-latest"] = $modver;
+                    $promo_versions[$ver."-recommended"] = $modver;
                 }
             }
             //Print everything else grouped by MC version.
